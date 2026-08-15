@@ -1,0 +1,22 @@
+#web framework and ASGI server
+fastapi
+uvicorn[standard]
+
+#async database driver for MongoDB
+motor
+
+#request and response validation
+pydantic
+pydantic-settings
+
+#verifies access and refresh tokens
+PyJWT
+
+#password hashing
+bcrypt
+
+#FASTAPI form data parsing
+python-multipart
+
+#environment variable parsing
+python-dotenv
