@@ -1,6 +1,13 @@
 // This file defines the Navbar component, which renders a navigation bar with links based on the user's role.
 
-import { AppBar, Avatar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -12,6 +19,7 @@ const LINKS = [
   { label: "Submit notice", to: "/submit", roles: ["MANAGER", "EMPLOYEE"] },
   { label: "Approval queue", to: "/approvals", roles: ["MANAGER"] },
   { label: "Add employee", to: "/employees", roles: ["MANAGER"] },
+  { label: "Invite codes", to: "/invite-codes", roles: ["MANAGER"] },
 ];
 
 // The Navbar component renders a navigation bar with links based on the user's role.
@@ -45,7 +53,7 @@ export function Navbar() {
         </Typography>
 
         <Box sx={{ display: "flex", gap: 1, flexGrow: 1 }}>
-            {/* Visible links are mapped to Typography components that act as navigation links using NavLink from react-router-dom. */}
+          {/* Visible links are mapped to Typography components that act as navigation links using NavLink from react-router-dom. */}
           {visibleLinks.map((link) => (
             <Typography
               key={link.to}
@@ -72,12 +80,26 @@ export function Navbar() {
         </Box>
 
         <Avatar
-          sx={{ bgcolor: "#d6e9fc", color: "primary.main", width: 32, height: 32, fontSize: 13, fontWeight: 700, mr: 1 }}
+          sx={{
+            bgcolor: "#d6e9fc",
+            color: "primary.main",
+            width: 32,
+            height: 32,
+            fontSize: 13,
+            fontWeight: 700,
+            mr: 1,
+          }}
         >
-            {/* This maps the user's role to a single character for display in the avatar, "Manager" for manager and "Employee" for employee. */}
+          {/* This maps the user's role to a single character for display in the avatar, "Manager" for manager and "Employee" for employee. */}
           {user.role === "MANAGER" ? "Manager" : "Employee"}
         </Avatar>
-        <IconButton onClick={() => { logout(); navigate("/login"); }} aria-label="Log out">
+        <IconButton
+          onClick={() => {
+            logout();
+            navigate("/login");
+          }}
+          aria-label="Log out"
+        >
           <LogoutIcon fontSize="small" />
         </IconButton>
       </Toolbar>
