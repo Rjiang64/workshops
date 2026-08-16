@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Box, Button, Card, Container, TextField, Typography } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import * as api from "../api";
+// Normalizes backend error responses (which can be a plain string OR an array of
+// validation-error objects) into a single string that's always safe to render.
+import { getErrorMessage } from "../api/errors";
 
 // The InviteCodesPage component renders a form that allows managers to enter the email of a 
 // new user and generate a one-time invite code for them.
@@ -26,7 +29,9 @@ export function InviteCodesPage() {
       setCopied(false);
       setTargetEmail("");
     } catch (err) {
-      setError(err.response?.data?.detail || "Could not generate a code.");
+      // Was: err.response?.data?.detail directly, which crashed on validation
+      // errors (e.g. an invalid email) since detail is an array of objects in that case.
+      setError(getErrorMessage(err, "Could not generate a code."));
     } finally {
       setBusy(false);
     }

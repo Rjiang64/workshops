@@ -3,6 +3,9 @@ import { useState } from "react";
 import { Box, Button, Card, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import * as api from "../api";
+// Normalizes backend error responses (which can be a plain string OR an array of
+// validation-error objects) into a single string that's always safe to render.
+import { getErrorMessage } from "../api/errors";
 
 // The RegisterPage component renders a registration form that allows users to enter their email, password, select their role (Employee or Manager),
 // and optionally provide an invite code for manager accounts.
@@ -25,7 +28,9 @@ export function RegisterPage() {
       const user = await api.register(email, password, role, inviteCode);
       setResult(user);
     } catch (err) {
-      setError(err.response?.data?.detail || "Could not create account.");
+      // Was: err.response?.data?.detail directly, which crashed on validation
+      // errors (e.g. a short password) since detail is an array of objects in that case.
+      setError(getErrorMessage(err, "Could not create account."));
     } finally {
       setBusy(false);
     }

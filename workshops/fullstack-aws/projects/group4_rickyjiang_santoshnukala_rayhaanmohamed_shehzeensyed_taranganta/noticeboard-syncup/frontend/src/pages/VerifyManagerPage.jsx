@@ -5,6 +5,9 @@ import { useState } from "react";
 import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import * as api from "../api";
+// Normalizes backend error responses (which can be a plain string OR an array of
+// validation-error objects) into a single string that's always safe to render.
+import { getErrorMessage } from "../api/errors";
 
 // The VerifyManagerPage component renders a form that allows users to enter their email and invite code to verify their manager account.
 export function VerifyManagerPage() {
@@ -23,7 +26,9 @@ export function VerifyManagerPage() {
       await api.verifyManager(email, code);
       setVerified(true);
     } catch (err) {
-      setError(err.response?.data?.detail || "Could not verify this account.");
+      // Was: err.response?.data?.detail directly, which crashed on validation
+      // errors (e.g. a missing field) since detail is an array of objects in that case.
+      setError(getErrorMessage(err, "Could not verify this account."));
     } finally {
       setBusy(false);
     }
