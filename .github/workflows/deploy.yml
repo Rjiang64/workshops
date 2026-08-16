@@ -1,0 +1,51 @@
+name: Deploy Notice Board
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy backend via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/workshops/workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/backend
+            git pull origin master
+            source venv/bin/activate
+            pip install -r requirements.txt
+            sudo systemctl restart syncup-backend
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build frontend
+        working-directory: workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/frontend
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload frontend to S3
+        working-directory: workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/frontend
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET }}/ --delete
