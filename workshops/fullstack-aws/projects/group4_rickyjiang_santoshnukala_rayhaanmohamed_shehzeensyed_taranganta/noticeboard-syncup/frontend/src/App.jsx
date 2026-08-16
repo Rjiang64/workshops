@@ -15,20 +15,55 @@ import { InviteCodesPage } from "./pages/InviteCodesPage";
 
 export default function App() {
   return (
-    <BrowserRouter> // enables client-side routing for the application, allowing navigation between different pages without full page reloads.
-      <AuthProvider> // wraps navbar and routes with authentication context, providing access to user state and authentication functions throughout the application.
+    <BrowserRouter>
+      <AuthProvider>
         <Navbar />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify-manager" element={<VerifyManagerPage />} />
 
-          <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
-          <Route path="/submit" element={<ProtectedRoute><SubmitNoticePage /></ProtectedRoute>} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <FeedPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/submit"
+            element={
+              <ProtectedRoute>
+                <SubmitNoticePage />
+              </ProtectedRoute>
+            }
+          />
 
-          <Route path="/approvals" element={<ProtectedRoute role="MANAGER"><ApprovalQueuePage /></ProtectedRoute>} />
-          <Route path="/employees" element={<ProtectedRoute role="MANAGER"><CreateEmployeePage /></ProtectedRoute>} />
-          <Route path="/invite-codes" element={<ProtectedRoute role="MANAGER"><InviteCodesPage /></ProtectedRoute>} />
+          <Route
+            path="/approvals"
+            element={
+              <ProtectedRoute role="MANAGER">
+                <ApprovalQueuePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employees"
+            element={
+              <ProtectedRoute role="MANAGER">
+                <CreateEmployeePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/invite-codes"
+            element={
+              <ProtectedRoute role="MANAGER">
+                <InviteCodesPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
