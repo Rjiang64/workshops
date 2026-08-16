@@ -1,7 +1,7 @@
 # None of these are stored in the database, they are only used for request/response 
 # validation and serialization
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 from app.models.user import Role
 
