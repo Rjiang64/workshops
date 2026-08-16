@@ -57,7 +57,7 @@ export function LoginPage() {
             mb: 3,
           }}
         >
-          The notice ledger
+          The notice ledger for your team
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
