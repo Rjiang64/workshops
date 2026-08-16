@@ -9,6 +9,9 @@ motor
 pydantic
 pydantic-settings
 
+#validates EmailStr fields (pulled in by pydantic, but not installed by default)
+email-validator
+
 #verifies access and refresh tokens
 PyJWT
 

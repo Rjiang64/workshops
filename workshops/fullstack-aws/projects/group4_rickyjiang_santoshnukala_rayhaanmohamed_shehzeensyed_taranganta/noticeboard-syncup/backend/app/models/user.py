@@ -7,10 +7,6 @@
 #Manager self-registers, no/bad code      →  RegisterRequest(role=MANAGER)  →  UserInDB created with status=PENDING  →  auth_service.login() rejects them until...
 #...they later call POST /auth/verify-manager {email, code}  →  invite code validated and marked used  →  that user's status flipped PENDING → ACTIVE  →  can now log in
 
-
-
-
-
 # datetime for timestamping
 from datetime import datetime, timezone
 #enum for defining the user roles
@@ -60,7 +56,7 @@ class UserInDB(BaseModel):
     role: Role
     # Every new user created is active by default
     # However if a new manager is created through self registration it will be overridden to PENDING
-    status: UserStatus = UserStatus.ACTIVE
+    status: UserStatus = UserStatus.APPROVED
     # Defines the user who created the new user.
     # None if the user was created by the seed manager, otherwise it is the id of the manager who created the user.
     created_by: PyObjectId | None = None
