@@ -49,6 +49,9 @@ async def ensure_indexes() -> None:
     await db.users.create_index("email", unique=True)
     # exist for query seed
     # status (used for approval query to fllter PENDING/APPROVED/REJECTED) 
-    # and author_id get queried often. Having this speeds up process
     await db.notices.create_index("status")
+    # and author_id get queried often. Having this speeds up process
     await db.notices.create_index("author_id")
+    # ensures each invite code is unique and can only be used once.
+    await db.invite_codes.create_index("code", unique=True)
+    
