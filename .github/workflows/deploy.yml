@@ -1,4 +1,4 @@
-name: Deploy Notice Board
+name: SyncUp Deploy (student-ricky-jiang)
 
 on:
   push:
