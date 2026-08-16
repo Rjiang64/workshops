@@ -10,7 +10,7 @@ from app.services import notice_service
 router = APIRouter(prefix="/notices", tags=["notices"])
 
 # The `submit_notice` endpoint allows a user to submit a new notice by providing the notice details.
-@router.post("", response_model=NoticeOut, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=NoticeOut, response_model_by_alias=False, status_code=status.HTTP_201_CREATED)
 async def submit_notice(
     payload: NoticeCreate,
     user: UserInDB = Depends(get_current_user),
@@ -18,12 +18,12 @@ async def submit_notice(
     return await notice_service.submit_notice(payload, user)
 
 # The `get_feed` endpoint retrieves a list of notices for the current user, filtering based on their role.
-@router.get("", response_model=list[NoticeOut])
+@router.get("", response_model=list[NoticeOut], response_model_by_alias=False)
 async def get_feed(user: UserInDB = Depends(get_current_user)) -> list[NoticeOut]:
     return await notice_service.get_feed(user)
 
 # The `acknowledge_notice` endpoint allows an employee to acknowledge that they have read a specific notice.
-@router.post("/{notice_id}/approve", response_model=NoticeOut)
+@router.post("/{notice_id}/approve", response_model=NoticeOut, response_model_by_alias=False)
 async def approve_notice(
     notice_id: str,
     manager: UserInDB = Depends(require_roles(Role.MANAGER)),
@@ -31,7 +31,7 @@ async def approve_notice(
     return await notice_service.approve_notice(notice_id, manager)
 
 # The `reject_notice` endpoint allows a manager to reject a specific notice.
-@router.post("/{notice_id}/reject", response_model=NoticeOut)
+@router.post("/{notice_id}/reject", response_model=NoticeOut, response_model_by_alias=False)
 async def reject_notice(
     notice_id: str,
     manager: UserInDB = Depends(require_roles(Role.MANAGER)),
@@ -39,7 +39,7 @@ async def reject_notice(
     return await notice_service.reject_notice(notice_id, manager)
 
 # The `acknowledge_notice` endpoint allows an employee to acknowledge (mark as read) a specific notice.
-@router.post("/{notice_id}/ack", response_model=NoticeOut)
+@router.post("/{notice_id}/ack", response_model=NoticeOut, response_model_by_alias=False)
 async def acknowledge_notice(
     notice_id: str,
     employee: UserInDB = Depends(require_roles(Role.EMPLOYEE)),

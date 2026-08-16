@@ -25,13 +25,13 @@ async def refresh(payload: RefreshRequest) -> TokenPair:
 
 # The `register` endpoint allows new users to register by providing their email, password, role, and an optional invite code.
 # It returns the newly created user's information if the registration is successful.                
-@router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserOut, response_model_by_alias=False, status_code=status.HTTP_201_CREATED)
 async def register(payload: RegisterRequest) -> UserOut:
     return await auth_service.register(payload)
 
 # The `verify_manager` endpoint allows a manager to verify their account using an invite code.
 # It returns the manager's information if the verification is successful.
-@router.post("/verify-manager", response_model=UserOut)
+@router.post("/verify-manager", response_model=UserOut, response_model_by_alias=False)
 async def verify_manager(payload: VerifyManagerRequest) -> UserOut:
     return await auth_service.verify_manager(payload)
 
@@ -39,6 +39,6 @@ async def verify_manager(payload: VerifyManagerRequest) -> UserOut:
 # It exists because the JWT itself only carries the user's id and role (deliberately,
 # to avoid stale/exposed data) - this is how the frontend gets the rest, like email,
 # once it already knows someone is logged in.
-@router.get("/me", response_model=UserOut)
+@router.get("/me", response_model=UserOut, response_model_by_alias=False)
 async def get_me(user: UserInDB = Depends(get_current_user)) -> UserOut:
     return UserOut(**user.model_dump(by_alias=True))

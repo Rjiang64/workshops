@@ -2,16 +2,15 @@
 
 import {
   AppBar,
-  Avatar,
   Box,
   IconButton,
   Toolbar,
   Typography,
 } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo.png";
 
 // role specific links for the navigation bar, each with a label, route, and allowed roles.
 const LINKS = [
@@ -23,7 +22,7 @@ const LINKS = [
 ];
 
 // The Navbar component renders a navigation bar with links based on the user's role.
-//  It also includes a logout button and displays the user's role as an avatar.
+// It also includes a logout button and displays the logged-in user's email.
 export function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -45,9 +44,12 @@ export function Navbar() {
       }}
     >
       <Toolbar sx={{ gap: 1 }}>
-        <Avatar sx={{ bgcolor: "primary.main", width: 32, height: 32, mr: 1 }}>
-          <NotificationsIcon sx={{ fontSize: 18 }} />
-        </Avatar>
+        <Box
+          component="img"
+          src={logo}
+          alt="SyncUp logo"
+          sx={{ width: 32, height: 32, borderRadius: "22%", mr: 1, objectFit: "cover" }}
+        />
         <Typography variant="h6" sx={{ fontWeight: 700, mr: 4 }}>
           SyncUp
         </Typography>
@@ -81,25 +83,12 @@ export function Navbar() {
 
         {/* user.email arrives a moment after login/page-load, once AuthContext's
             effect finishes fetching /auth/me (the JWT itself only has id + role).
-            Fall back to the role letter until then, so this never shows "undefined". */}
+            Nothing renders here until it resolves, rather than showing a placeholder. */}
         {user.email && (
-          <Typography sx={{ fontSize: 13, color: "text.secondary", mr: 1 }}>
+          <Typography sx={{ fontSize: 14, fontWeight: 600, color: "text.primary", mr: 2 }}>
             {user.email}
           </Typography>
         )}
-        <Avatar
-          sx={{
-            bgcolor: "#d6e9fc",
-            color: "primary.main",
-            width: 32,
-            height: 32,
-            fontSize: 13,
-            fontWeight: 700,
-            mr: 1,
-          }}
-        >
-          {user.email ? user.email[0].toUpperCase() : (user.role === "MANAGER" ? "M" : "E")}
-        </Avatar>
         <IconButton
           onClick={() => {
             logout();

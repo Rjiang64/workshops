@@ -53,12 +53,36 @@ export function NoticeCard({ notice, onChange }) {
     const report = await api.getReadStatus(notice.id);
     setReadReport(report);
   }
+  // Read state only ever means anything for an approved notice - PENDING/REJECTED
+  // notices are never "read", they're just not yet (or no longer) live.
+  const isUnread = notice.status === "APPROVED" && !notice.read_by_me;
+  const isRead = notice.status === "APPROVED" && notice.read_by_me;
+
   // The component returns a Card component from MUI that contains the notice's details and action buttons based on the user's role and the notice's status.
   return (
-    <Card sx={{ mb: 2 }}>
+    <Card
+      sx={{
+        mb: 2,
+        // Once read, the card "sinks" back into the page: same background color as the
+        // page behind it, no shadow, just a hairline border - so it visually recedes and
+        // unread cards (still white + shadowed) stand out by comparison when scanning the feed.
+        ...(isRead && {
+          bgcolor: "background.default",
+          boxShadow: "none",
+          border: "1px solid rgba(0,0,0,0.06)",
+        }),
+      }}
+    >
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
-          <Typography sx={{ fontWeight: 700, fontSize: 18 }}>{notice.title}</Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {/* Small unread dot - only shown while this specific viewer hasn't acknowledged
+                the notice yet. Disappears the instant it's marked read. */}
+            {isUnread && (
+              <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "primary.main", flexShrink: 0 }} />
+            )}
+            <Typography sx={{ fontWeight: isRead ? 500 : 700, fontSize: 18 }}>{notice.title}</Typography>
+          </Box>
           <Typography sx={{ fontWeight: 700, fontSize: 13, color: STATUS_COLOR[notice.status] }}>
             {notice.status.charAt(0) + notice.status.slice(1).toLowerCase()}
           </Typography>
@@ -80,12 +104,12 @@ export function NoticeCard({ notice, onChange }) {
         <Divider sx={{ mb: 2 }} />
 
         <Box sx={{ display: "flex", gap: 1 }}>
-          {isEmployee && notice.status === "APPROVED" && !notice.read_by_me && (
+          {isEmployee && isUnread && (
             <Button variant="contained" disabled={busy} onClick={() => runAction(() => api.acknowledgeNotice(notice.id))}>
               Mark as read
             </Button>
           )}
-          {isEmployee && notice.read_by_me && (
+          {isEmployee && isRead && (
             <Typography sx={{ fontSize: 14, fontWeight: 600, color: "success.main", alignSelf: "center" }}>
               Read
             </Typography>

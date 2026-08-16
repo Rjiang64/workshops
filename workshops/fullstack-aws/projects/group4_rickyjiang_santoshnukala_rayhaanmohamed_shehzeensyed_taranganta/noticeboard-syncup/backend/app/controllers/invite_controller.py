@@ -9,7 +9,7 @@ from app.services import invite_service
 router = APIRouter(prefix="/admin/invite-codes", tags=["invite-codes"])
 
 # The `create_invite_code` endpoint allows a manager to generate a new invite code for a specific target email.
-@router.post("", response_model=InviteCodeOut, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=InviteCodeOut, response_model_by_alias=False, status_code=status.HTTP_201_CREATED)
 async def create_invite_code(
     payload: InviteCodeCreate,
     manager: UserInDB = Depends(require_roles(Role.MANAGER)),
