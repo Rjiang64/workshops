@@ -1,10 +1,11 @@
 # This file contains the FastAPI routes for authentication-related operations, including login, 
 # token refresh, user registration, and manager verification. It defines the endpoints and 
 # delegates the actual business logic to the `auth_service` module.
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 
 from app.models.auth import LoginRequest, RefreshRequest, RegisterRequest, TokenPair, VerifyManagerRequest
-from app.models.user import UserOut
+from app.models.user import UserInDB, UserOut
+from app.security.deps import get_current_user
 from app.services import auth_service
 
 # the prefix "/auth" is used for all routes in this router, and the tag "auth" is used for documentation purposes.
@@ -33,3 +34,11 @@ async def register(payload: RegisterRequest) -> UserOut:
 @router.post("/verify-manager", response_model=UserOut)
 async def verify_manager(payload: VerifyManagerRequest) -> UserOut:
     return await auth_service.verify_manager(payload)
+
+# The `me` endpoint returns the profile of whoever the access token belongs to.
+# It exists because the JWT itself only carries the user's id and role (deliberately,
+# to avoid stale/exposed data) - this is how the frontend gets the rest, like email,
+# once it already knows someone is logged in.
+@router.get("/me", response_model=UserOut)
+async def get_me(user: UserInDB = Depends(get_current_user)) -> UserOut:
+    return UserOut(**user.model_dump(by_alias=True))

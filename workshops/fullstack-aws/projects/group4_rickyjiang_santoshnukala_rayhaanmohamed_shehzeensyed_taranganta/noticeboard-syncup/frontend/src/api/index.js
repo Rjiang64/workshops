@@ -24,6 +24,12 @@ export async function verifyManager(email, code) {
   const { data } = await client.post("/auth/verify-manager", { email, code });
   return data;
 }
+// Fetches the profile (including email) of whoever the current access token belongs to.
+// Needed because the JWT itself only carries id + role, not email.
+export async function getMe() {
+  const { data } = await client.get("/auth/me");
+  return data;
+}
 // Refreshes the access token using the refresh token stored in local storage.
 export async function createEmployee(email, password) {
   const { data } = await client.post("/users", { email, password, role: "EMPLOYEE" });

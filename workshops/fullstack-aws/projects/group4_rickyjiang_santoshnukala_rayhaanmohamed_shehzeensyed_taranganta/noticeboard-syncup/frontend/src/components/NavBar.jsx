@@ -79,6 +79,14 @@ export function Navbar() {
           ))}
         </Box>
 
+        {/* user.email arrives a moment after login/page-load, once AuthContext's
+            effect finishes fetching /auth/me (the JWT itself only has id + role).
+            Fall back to the role letter until then, so this never shows "undefined". */}
+        {user.email && (
+          <Typography sx={{ fontSize: 13, color: "text.secondary", mr: 1 }}>
+            {user.email}
+          </Typography>
+        )}
         <Avatar
           sx={{
             bgcolor: "#d6e9fc",
@@ -90,8 +98,7 @@ export function Navbar() {
             mr: 1,
           }}
         >
-          {/* This maps the user's role to a single character for display in the avatar, "Manager" for manager and "Employee" for employee. */}
-          {user.role === "MANAGER" ? "Manager" : "Employee"}
+          {user.email ? user.email[0].toUpperCase() : (user.role === "MANAGER" ? "M" : "E")}
         </Avatar>
         <IconButton
           onClick={() => {

@@ -1,6 +1,6 @@
 // THis file contains the context for authentication, including user state and login/logout functions.
 
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import * as api from "../api";
 import { clearTokens, setTokens } from "../api/client";
 
@@ -26,6 +26,20 @@ function loadUserFromStorage() {
 // Provides the authentication context to its children components, allowing them to access user state and authentication functions.
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(loadUserFromStorage);
+
+  // The JWT only ever gives us { id, role } synchronously (decoded from the token).
+  // Email isn't in the token at all, so whenever we know someone's logged in but
+  // don't yet have their email, fetch the full profile from /auth/me and merge it
+  // into user state. The `!user.email` guard stops this from re-firing forever once
+  // the email is actually loaded (merging it changes `user`, which would otherwise
+  // re-trigger this effect since `user` is a dependency below).
+  useEffect(() => {
+    if (user && !user.email) {
+      api.getMe().then((profile) => {
+        setUser((prev) => (prev ? { ...prev, email: profile.email } : prev));
+      });
+    }
+  }, [user]);
 
   const value = useMemo(
     () => ({
