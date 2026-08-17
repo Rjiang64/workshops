@@ -57,7 +57,7 @@ export function LoginPage() {
             mb: 3,
           }}
         >
-          The notice ledger for your team
+          The notice ledger, now on CloudFront
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
