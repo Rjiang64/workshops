@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - "workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/**"
+      - "workshops/fullstack-aws/projects/submission/ricky-jiang/noticeboard-syncup/**"
 
 jobs:
   deploy:
@@ -26,8 +26,12 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd ~/workshops/workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/backend
+            cd ~/workshops
             git pull origin master
+            cd workshops/fullstack-aws/projects/submission/ricky-jiang/noticeboard-syncup/backend
+            if [ ! -d venv ]; then
+              python3 -m venv venv
+            fi
             source venv/bin/activate
             pip install -r requirements.txt
             sudo systemctl restart syncup-backend
@@ -42,13 +46,13 @@ jobs:
           python-version: "3.12"
 
       - name: Build Lambda zip
-        working-directory: workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/backend
+        working-directory: workshops/fullstack-aws/projects/submission/ricky-jiang/noticeboard-syncup/backend
         run: |
           pip install --upgrade pip
           python build.py
 
       - name: Deploy Lambda code
-        working-directory: workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/backend
+        working-directory: workshops/fullstack-aws/projects/submission/ricky-jiang/noticeboard-syncup/backend
         run: |
           aws lambda update-function-code \
             --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
@@ -60,7 +64,7 @@ jobs:
           node-version: 20
 
       - name: Build frontend
-        working-directory: workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/frontend
+        working-directory: workshops/fullstack-aws/projects/submission/ricky-jiang/noticeboard-syncup/frontend
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
@@ -68,7 +72,7 @@ jobs:
           npm run build
 
       - name: Upload frontend to S3
-        working-directory: workshops/fullstack-aws/projects/group4_rickyjiang_santoshnukala_rayhaanmohamed_shehzeensyed_taranganta/noticeboard-syncup/frontend
+        working-directory: workshops/fullstack-aws/projects/submission/ricky-jiang/noticeboard-syncup/frontend
         run: |
           aws s3 sync dist/ s3://${{ secrets.S3_BUCKET }}/ --delete
 
