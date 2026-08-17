@@ -1,5 +1,7 @@
 # SyncUp — The Notice Ledger
 
+🔗 **Live app:** [https://d29oqtt6m1oqoi.cloudfront.net](https://d29oqtt6m1oqoi.cloudfront.net) — see [Sample login](#sample-login) below for credentials.
+
 An internal company notice board. Managers post notices and provision accounts; employees read notices and submit their own (pending approval). Built as a from-scratch parallel to a prior "bank app" project, reusing the same layered architecture and JWT/RBAC pattern but swapping PostgreSQL for MongoDB.
 
 ## The three differentiators
