@@ -23,3 +23,7 @@ python-multipart
 
 #environment variable parsing
 python-dotenv
+
+#ASGI adapter that lets the FastAPI app run inside AWS Lambda (used by
+#app/lambda_handler.py only - the EC2 deployment via uvicorn doesn't need it)
+mangum
