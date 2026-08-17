@@ -95,3 +95,7 @@ password: password123
 ```
 
 _Last deployed via GitHub Actions._
+
+## Deployment architecture
+
+The live frontend (CloudFront + S3) talks to a **Lambda + API Gateway** backend as of the latest deploy. An EC2 instance running the same backend (via systemd) is kept running and kept in sync by the same CI workflow, as a fallback - both are updated on every push, only the frontend's `VITE_API_URL` decides which one is actually "live."
