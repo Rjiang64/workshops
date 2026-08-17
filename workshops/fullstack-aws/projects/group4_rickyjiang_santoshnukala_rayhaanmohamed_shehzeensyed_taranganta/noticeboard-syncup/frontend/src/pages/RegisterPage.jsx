@@ -1,11 +1,12 @@
 // THis file defines the RegisterPage component, which provides a user interface for creating a new account with email, password, role selection, and optional invite code.
 import { useState } from "react";
-import { Box, Button, Card, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Box, Button, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import * as api from "../api";
 // Normalizes backend error responses (which can be a plain string OR an array of
 // validation-error objects) into a single string that's always safe to render.
 import { getErrorMessage } from "../api/errors";
+import { AuthLayout } from "../components/AuthLayout";
 
 // The RegisterPage component renders a registration form that allows users to enter their email, password, select their role (Employee or Manager),
 // and optionally provide an invite code for manager accounts.
@@ -40,28 +41,28 @@ export function RegisterPage() {
     const isPendingManager = result.role === "MANAGER" && result.status === "PENDING";
 
     return (
-      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "background.default" }}>
-        <Card sx={{ width: 380, p: 4, textAlign: "center" }}>
-          <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 1 }}>Account created</Typography>
+      <AuthLayout>
+        <Box sx={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
+          <Typography sx={{ fontWeight: 700, fontSize: 22, mb: 1 }}>Account created</Typography>
           <Typography sx={{ fontSize: 14, color: "text.secondary", mb: 3 }}>
             {isPendingManager
               ? "Your account is pending verification. Ask an existing manager for an invite code, then verify on the next screen."
-              : "You're all set — log in now."}
+              : "You're all set — sign in now."}
           </Typography>
           <Button variant="contained" fullWidth onClick={() => navigate(isPendingManager ? "/verify-manager" : "/login")}>
-            {isPendingManager ? "Verify account" : "Go to login"}
+            {isPendingManager ? "Verify account" : "Go to sign in"}
           </Button>
-        </Card>
-      </Box>
+        </Box>
+      </AuthLayout>
     );
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "background.default" }}>
-      <Card sx={{ width: 380, p: 4 }}>
-        <Typography sx={{ fontWeight: 700, fontSize: 20, textAlign: "center" }}>Create an account</Typography>
-        <Typography sx={{ fontSize: 13, color: "text.secondary", textAlign: "center", mb: 3 }}>
-          SyncUp — the notice ledger
+    <AuthLayout>
+      <Box sx={{ width: "100%", maxWidth: 400 }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 26 }}>Sign up</Typography>
+        <Typography sx={{ fontSize: 14, color: "text.secondary", mb: 3 }}>
+          Create an account to get started.
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
@@ -96,11 +97,11 @@ export function RegisterPage() {
             {busy ? "Creating account..." : "Create account"}
           </Button>
 
-          <Typography sx={{ fontSize: 13, color: "text.secondary", textAlign: "center" }}>
-            Already have an account? <Link to="/login">Log in</Link>
+          <Typography sx={{ fontSize: 14, color: "text.secondary", textAlign: "center" }}>
+            Already have an account? <Link to="/login">Sign in</Link>
           </Typography>
         </Box>
-      </Card>
-    </Box>
+      </Box>
+    </AuthLayout>
   );
 }

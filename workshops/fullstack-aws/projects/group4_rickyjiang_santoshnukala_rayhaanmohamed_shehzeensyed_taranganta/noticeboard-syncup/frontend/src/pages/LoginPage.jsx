@@ -6,9 +6,10 @@
 //  ask "what's actually typed in that box right now."
 
 import { useState } from "react";
-import { Box, Button, Card, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { AuthLayout } from "../components/AuthLayout";
 
 // The LoginPage component renders a login form that allows users to enter their email and password to log in.
 export function LoginPage() {
@@ -34,30 +35,14 @@ export function LoginPage() {
     }
   }
 
-  // The component returns a Box component from MUI that centers the login form on the page, containing a Card with input fields for email and password, a submit button, and a link to the registration page.
+  // The component renders the shared AuthLayout (branded panel on the left, form on
+  // the right) with the email/password fields and a link to the register page.
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        bgcolor: "background.default",
-      }}
-    >
-      <Card sx={{ width: 380, p: 4 }}>
-        <Typography sx={{ fontWeight: 700, fontSize: 20, textAlign: "center" }}>
-          SyncUp
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: 13,
-            color: "text.secondary",
-            textAlign: "center",
-            mb: 3,
-          }}
-        >
-          The notice ledger, now on CloudFront
+    <AuthLayout>
+      <Box sx={{ width: "100%", maxWidth: 400 }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 26 }}>Sign in</Typography>
+        <Typography sx={{ fontSize: 14, color: "text.secondary", mb: 3 }}>
+          Welcome back. Enter your details to continue.
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
@@ -86,23 +71,15 @@ export function LoginPage() {
             </Typography>
           )}
 
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={busy}
-            fullWidth
-            sx={{ mb: 2 }}
-          >
-            {busy ? "Logging in..." : "Log in"}
+          <Button type="submit" variant="contained" disabled={busy} fullWidth sx={{ mb: 2 }}>
+            {busy ? "Logging in..." : "Sign in"}
           </Button>
 
-          <Typography
-            sx={{ fontSize: 13, color: "text.secondary", textAlign: "center" }}
-          >
-            Don't have an account? <Link to="/register">Register</Link>
+          <Typography sx={{ fontSize: 14, color: "text.secondary", textAlign: "center" }}>
+            Don't have an account? <Link to="/register">Sign up</Link>
           </Typography>
         </Box>
-      </Card>
-    </Box>
+      </Box>
+    </AuthLayout>
   );
 }
